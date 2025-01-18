@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import { GameOptions } from "./GameOptions";
-import { GraphicButton } from "./GraphicButton";
-import { Sprite } from "./Sprite";
+import { Sprite } from "./GameObjects/Sprite";
+import { GraphicButton } from "./GameObjects/GraphicButton";
 
 export class TitleOverlay extends GameObjects.Container {
 

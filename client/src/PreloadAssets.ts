@@ -16,10 +16,6 @@ export class PreloadAssets extends Phaser.Scene {
     // method to be called during class preloading
     preload(): void {
         this.load.image('background', 'assets/images/background.png');
-        // this.load.image('pointer', 'assets/images/pointer.png');
-        // this.load.image('wheel_center', 'assets/images/wheel-center.png');
-        // this.load.image('wheel_slice', 'assets/images/wheel-slice.png');
-        // this.load.animation('coin_anim', "assets/images/coin-anim.json");
     }
 
     // method to be executed when the scene is created
@@ -29,7 +25,11 @@ export class PreloadAssets extends Phaser.Scene {
         this.load.image('pointer', 'assets/images/pointer.png');
         this.load.image('wheel_center', 'assets/images/wheel-center.png');
         this.load.image('wheel_slice', 'assets/images/wheel-slice.png');
-        this.load.animation('coin_anim', "assets/images/coin-anim.json");
+        this.load.animation('coin-anim', "assets/images/coin-anim.json");
+        this.load.spritesheet('coin', 'assets/images/coin-anim.png', {
+            frameWidth: 200, // Frame width of the sprite in the PNG
+            frameHeight: 200 // Frame height of the sprite in the PNG
+        });
 
         let width = this.cameras.main.width;
         let height = this.cameras.main.height;

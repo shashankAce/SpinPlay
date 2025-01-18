@@ -1,6 +1,5 @@
 import { GameObjects } from "phaser";
-import { resolve } from "../../webpack.config";
-import { GameOptions } from "./GameOptions";
+import { GameOptions } from "../GameOptions";
 
 export class GraphicButton extends GameObjects.Graphics {
 

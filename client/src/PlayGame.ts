@@ -1,9 +1,11 @@
 import { GameObjects, Tweens } from "phaser";
 import { TitleOverlay } from "./TitleOverlay";
 import { GameData, GameOptions } from "./GameOptions";
-import { Sprite } from "./Sprite";
-import { GraphicButton } from "./GraphicButton";
+import { Sprite } from "./GameObjects/Sprite";
 import { SpinWheel } from "./SpinWheel";
+import { CoinShower } from "./CoinShower";
+import { GraphicButton } from "./GameObjects/GraphicButton";
+import { Button } from "./GameObjects/Button";
 
 export class PlayGame extends Phaser.Scene {
     private wheel: SpinWheel;
@@ -31,19 +33,13 @@ export class PlayGame extends Phaser.Scene {
         // this.addSpinWheel();
 
         let buttonSize = { width: 350, height: 80 };
-        let button_posi = { x: g_width / 2 - buttonSize.width / 2, y: 870 };
-        let button = new GraphicButton(this);
-        button.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
-        this.add.existing(button);
+        let button_posi = { x: g_width / 2, y: 870 };
 
-        let fontSize = 40;
-        let clickToPlay = new GameObjects.Text(this, g_width / 2, button_posi.y + buttonSize.height / 2, 'Click to Spin', {
-            fontSize: `bold ${fontSize}px`,
-            color: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 4,
-        }).setOrigin(0.5);
-        this.add.existing(clickToPlay);
+        let btn = new Button(this);
+        btn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
+        btn.addText('Click To Spin');
+        this.add.existing(btn);
+
 
         const pointer = new Sprite(this, g_width / 2, 80, 'pointer')
         this.add.existing(pointer);
@@ -55,10 +51,21 @@ export class PlayGame extends Phaser.Scene {
 
         // let titleOverlay = new TitleOverlay(this);
 
+        let shower = new CoinShower(this);
+        shower.launchCoin();
+
+        this.game_update();
     }
 
-    update(time: number, delta: number): void {
-        this.wheel.onUpdate(time, delta);
+    game_update(): void {
+        this.time.addEvent({
+            delay: 1 / 60,
+            callback: () => {
+                this.wheel.onUpdate(.016);
+            },
+            callbackScope: this,
+            loop: true
+        });
     }
 
     onSpinClick() {

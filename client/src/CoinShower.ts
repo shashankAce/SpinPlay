@@ -1,80 +1,73 @@
-export default class CoinShower {
+import { Animations, GameObjects } from "phaser";
+import { Sprite } from "./GameObjects/Sprite";
+import { GameOptions } from "./GameOptions";
 
-    callback: Function;
-    private coins: AnimatedSprite[] = [];
-    private animationStopped: boolean = true;
-    app;
-    gravity = 5;
+export class CoinShower extends GameObjects.Group {
 
-    constructor(app) {
-        this.app = app;
-        this.onAssetsLoaded();
+    constructor(scene: Phaser.Scene) {
+        super(scene);
+        scene.add.existing(this);
+        this.classType = Sprite;
+        this.create();
     }
 
-    async onAssetsLoaded() {
-        // Retrieve the coin texture atlas (sprite sheet) from the loader resources
-        // Create coins and add them to the stage
-        const animations = await this.createSprite();
+    create() {
+        this.scene.anims.create({
+            key: 'spin',
+            frames: this.scene.anims.generateFrameNumbers('coin', {
+                start: 0,
+                end: 5,
+            }),
+            frameRate: 30,
+            repeat: -1
+        });
+
         for (let i = 0; i < 50; i++) {
-
-            let texture = [];
-            animations['coin-anim'].forEach(element => {
-                texture.push(Sprite.from(element).texture);
-            });
-
-            const coin = new AnimatedSprite(texture);
-            coin.anchor.set(0.5);
-            coin.scale.set(0.4);
-            coin.animationSpeed = this.getMinMax(0.2, 0.8);
-            coin.play();
-            this.app.stage.addChild(coin);
-            this.coins.push(coin);
+            let coin = new Sprite(this.scene, 0, 0, 'coin');
+            coin.setActive(false).setVisible(false);
+            this.add(coin);
         }
+    }
+
+    launchCoin() {
         this.resetCoins();
-        this.animationStopped = true;
+        this.scene.time.addEvent({
+            delay: 100,
+            callback: this.dropCoin,
+            callbackScope: this,
+            loop: true
+        });
     }
 
-    async createSprite() {
-        const animations = Assets.cache.get(`coin-json`);
-        return animations.data.animations;
+    private resetCoins() {
+        this.getChildren().forEach((coins, index) => {
+            (coins as Sprite).setPosition(0, 0);
+            (coins as Sprite).setActive(false).setVisible(false);
+        })
     }
 
-    animateCoins(): void {
-        this.resetCoins();
-        // Start the animation loop
-        this.animationStopped = false;
-    }
+    private dropCoin() {
+        // Get an inactive coin from the pool
+        const coin = this.getFirstDead();
 
-    update(delta: number) {
-        if (this.animationStopped)
-            return;
+        if (coin) {
+            coin.setActive(true).setVisible(true);
+            const x = Phaser.Math.Between(50, GameOptions.gameSize.width - 50);
+            coin.setPosition(x, -200);
+            coin.angle = Phaser.Math.Between(-20, 90);
+            coin.setScale(0.5);
+            coin.play('spin');
+            coin.anims.frameRate = Phaser.Math.Between(5, 10);
 
-        let allCoinsAtBottom = true;
-        this.coins.forEach((coin) => {
-            if (!this.animationStopped) {
-                coin.y += this.gravity * delta;
-                // Check if a coin has reached the bottom of the screen
-                if (coin.y < (this.app.screen.height + 100)) {
-                    allCoinsAtBottom = false;
+            // Make the coin fall
+            this.scene.tweens.add({
+                targets: coin,
+                y: GameOptions.gameSize.height + 200,
+                duration: Phaser.Math.Between(1000, 2000),
+                onComplete: () => {
+                    // coin.setActive(false).setVisible(false);
                 }
-            }
-        });
-
-        // Stop the animation if all coins are at the bottom
-        if (allCoinsAtBottom) {
-            this.animationStopped = true;
-            this.callback && this.callback();
+            });
         }
-    }
-
-    resetCoins() {
-        this.coins.forEach((coin) => {
-            coin.y = -this.getMinMax(100, 700);
-            coin.x = Math.random() * this.app.screen.width;
-        });
-    }
-
-    getMinMax(min, max) {
-        return Math.random() * (max - min) + min;
     }
 }
