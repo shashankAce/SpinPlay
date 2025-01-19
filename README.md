@@ -5,17 +5,17 @@
 2. Navigate to the Project Directory and open cmd in same folder or open cmd and navigate to the repo
 3. Install node modules to load the library
 
-npm i
+    npm i
 
 4. Run the following commands to host and build so that you can play on browser
 
 To run the server : Open cmd in the same repo or follow step 2 then type 
 
-npm start 
+    npm start 
 
 To build the project  : Open cmd in the same repo or follow step 2 then type
 
-npm run build
+    npm run build
 
 5. Open the below link on browser to play
 
