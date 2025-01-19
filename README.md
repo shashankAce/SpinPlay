@@ -17,6 +17,10 @@ To build the project  : Open cmd in the same repo or follow step 2 then type
 
     npm run build
 
+To work on the project  : Open cmd in the same repo or follow step 2 then type
+
+    npm run watch
+
 5. Open the below link on browser to play
 
 http://localhost:3001/
