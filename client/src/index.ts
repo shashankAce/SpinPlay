@@ -3,7 +3,6 @@ import { Config } from "./Config";
 import { PlayGame } from "./PlayGame";
 import { PreloadAssets } from "./PreloadAssets";
 
-// object to initialize the Scale Manager
 const scaleObject: Phaser.Types.Core.ScaleConfig = {
     mode: Phaser.Scale.FIT,                     // adjust size to automatically fit in the window
     autoCenter: Phaser.Scale.CENTER_BOTH,             // center the game horizontally and vertically

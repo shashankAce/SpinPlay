@@ -1,4 +1,4 @@
-import { Animations, GameObjects } from "phaser";
+import { GameObjects } from "phaser";
 import { Sprite } from "./GameObjects/Sprite";
 import { Config } from "./Config";
 
@@ -51,7 +51,6 @@ export class CoinShower extends GameObjects.Group {
     }
 
     private dropCoin() {
-        // Get an inactive coin from the pool
         const coin = this.getFirstDead();
 
         if (coin) {

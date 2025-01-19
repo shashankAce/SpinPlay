@@ -4,12 +4,10 @@ import { Config } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
 import { SpinWheel } from "./SpinWheel";
 import { CoinShower } from "./CoinShower";
-import { GraphicButton } from "./GameObjects/GraphicButton";
 import { Button } from "./GameObjects/Button";
 import { clientEvent } from "./EventListener/clientEvent";
 import { EventName } from "./EventListener/EventName";
 import { Presets } from "./Presets";
-import { resolve } from "../../webpack.config";
 
 export type GAME_DATA = {
     credits: number[],

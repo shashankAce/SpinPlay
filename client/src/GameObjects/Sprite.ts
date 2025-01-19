@@ -4,10 +4,10 @@ export class Sprite extends Phaser.GameObjects.Sprite {
 
     constructor(
         scene: Phaser.Scene,
-        x: number = 0, // Default to 0 if not provided
-        y: number = 0, // Default to 0 if not provided
-        texture: string | Phaser.Textures.Texture = '', // Default to an empty string
-        frame?: string | number // Optional frame parameter
+        x: number = 0,
+        y: number = 0,
+        texture: string | Phaser.Textures.Texture = '',
+        frame?: string | number
     ) {
         super(scene, x, y, texture, frame);
         scene.add.existing(this);
