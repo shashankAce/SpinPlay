@@ -1,6 +1,7 @@
 import { GameObjects } from "phaser";
 import { Config, GameData } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
+import { resolve } from "../../webpack.config";
 
 
 enum WHEEL_STATE {
@@ -53,41 +54,45 @@ export class SpinWheel extends GameObjects.Container {
         this.add(wheel);
     }
 
-    spin(stopAtIndex: number) {
+    async spin(stopAtIndex: number) {
+        return new Promise((resolve: Function, reject) => {
 
-        if (this.isSpinPressed)
-            return;
+            if (this.isSpinPressed)
+                return;
 
-        this.isSpinPressed = true;
+            this.isSpinPressed = true;
 
-        let rota_count = 8;
+            let rota_count = 8;
 
-        let final = (360 - stopAtIndex * 45) + (360 * rota_count);
-        let cur_angle = this.angle;
+            let final = (360 - stopAtIndex * 45) + (360 * rota_count);
+            let cur_angle = this.angle;
 
-        let times = Math.floor(cur_angle / 360);
-        cur_angle -= 360 * times;
-        final = final - cur_angle;
+            let times = Math.floor(cur_angle / 360);
+            cur_angle -= 360 * times;
+            final = final - cur_angle;
 
-        let deceleration = this.scene.tweens.add({
-            targets: this,
-            angle: cur_angle + final,
-            duration: 8000,
-            ease: 'Cubic.Out',
-            paused: true,
-            onComplete: () => {
-                this.isSpinPressed = false;
-            }
+            let deceleration = this.scene.tweens.add({
+                targets: this,
+                angle: cur_angle + final,
+                duration: 8000,
+                ease: 'Cubic.Out',
+                paused: true,
+                onComplete: () => {
+                    this.isSpinPressed = false;
+                    resolve();
+                }
+            });
+            this.scene.tweens.add({
+                targets: this,
+                angle: 360 * 3,
+                duration: 2000,
+                ease: 'Cubic.In',
+                onComplete: () => {
+                    deceleration.play();
+                }
+            });
         });
-        this.scene.tweens.add({
-            targets: this,
-            angle: 360 * 3,
-            duration: 2000,
-            ease: 'Cubic.In',
-            onComplete: () => {
-                deceleration.play();
-            }
-        });
+
     }
 
     // spinWheel(stopAtIndex: number) {

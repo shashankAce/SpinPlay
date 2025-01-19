@@ -2,11 +2,14 @@ import { GameObjects } from "phaser";
 import { GraphicButton } from "./GraphicButton";
 
 export class Button extends GameObjects.Container {
+    private clickEnabled: boolean = true;
+
     constructor(scene: Phaser.Scene) {
         super(scene);
         scene.add.existing(this);
     }
 
+    public id = 0;
     private button_x = 0;
     private button_y = 0;
     private button_width = 0;
@@ -27,6 +30,10 @@ export class Button extends GameObjects.Container {
 
         this.x = x;
         this.y = y;
+    }
+
+    disableClick(bool: boolean) {
+        this.clickEnabled = !bool;
     }
 
     addText(msg: string, fillStyle?: Phaser.Types.GameObjects.Text.TextStyle) {
@@ -85,7 +92,8 @@ export class Button extends GameObjects.Container {
     }
 
     async onClick() {
+        if(!this.clickEnabled) return;
         await this.scaleEffect();
-        this.funcCallback && this.funcCallback();
+        this.funcCallback && this.funcCallback(this);
     }
 }
