@@ -69,13 +69,23 @@ export class SpinWheel extends GameObjects.Container {
         cur_angle -= 360 * times;
         final = final - cur_angle;
 
-        this.scene.tweens.add({
+        let deceleration = this.scene.tweens.add({
             targets: this,
             angle: cur_angle + final,
-            duration: 10000,
-            ease: 'Cubic.InOut',
+            duration: 8000,
+            ease: 'Cubic.Out',
+            paused: true,
             onComplete: () => {
                 this.isSpinPressed = false;
+            }
+        });
+        this.scene.tweens.add({
+            targets: this,
+            angle: 360 * 3,
+            duration: 2000,
+            ease: 'Cubic.In',
+            onComplete: () => {
+                deceleration.play();
             }
         });
     }
