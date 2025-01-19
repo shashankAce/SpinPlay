@@ -29,11 +29,14 @@ export class CoinShower extends GameObjects.Group {
         }
     }
 
-    dropCoins() {
+    dropCoins(callback: Function) {
+        this.funcCallback = callback;
+        this.dropCount = 0;
+
         this.resetCoins();
         this.scene.time.removeAllEvents();
         this.scene.time.addEvent({
-            delay: 90,
+            delay: 60,
             callback: this.dropCoin,
             callbackScope: this,
             loop: true
@@ -67,8 +70,15 @@ export class CoinShower extends GameObjects.Group {
                 duration: Phaser.Math.Between(1000, 2000),
                 onComplete: () => {
                     // coin.setActive(false).setVisible(false);
+                    this.dropCount += 1;
+                    if (this.dropCount == 50) {
+                        this.funcCallback();
+                        this.funcCallback = null;
+                    }
                 }
             });
         }
     }
+    private funcCallback: Function;
+    private dropCount = 0;
 }

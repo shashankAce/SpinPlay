@@ -2,6 +2,8 @@ import { GameObjects } from "phaser";
 import { Config } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
 import { GraphicButton } from "./GameObjects/GraphicButton";
+import { Button } from "./GameObjects/Button";
+import { cli } from "webpack";
 
 export class TitleOverlay extends GameObjects.Container {
 
@@ -36,33 +38,50 @@ export class TitleOverlay extends GameObjects.Container {
         this.add(title);
 
 
-        let buttonSize = { x: 200, y: 50 };
-        let button_posi = { x: g_width / 2 - buttonSize.x / 2, y: 800 };
 
-        let button = new GraphicButton(this.scene);
-        button.create(button_posi.x, button_posi.y, buttonSize.x, buttonSize.y, () => {
-            button.disableInteractive();
-            this.scene.tweens.add({
-                targets: this,
-                alpha: 0,
-                duration: 300,
-                ease: 'Linear',
-                onComplete: () => {
-                    console.log(' TitleOverlay Faded ');
-                    this.destroy();
-                }
-            });
+
+        let buttonSize = { width: 350, height: 80 };
+        let button_posi = { x: g_width / 2, y: 800 };
+
+        let clickToGameSceneBtn = new Button(this.scene);
+        clickToGameSceneBtn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, () => {
+            this.hide();
         });
-        this.add(button);
 
-
-        let fontSize = 20;
-        let clickToPlay = new GameObjects.Text(this.scene, g_width / 2, button_posi.y + buttonSize.y / 2, 'Click to Play', {
-            fontSize: `bold ${fontSize}px`,
+        clickToGameSceneBtn.addText('Click to Play', {
+            fontSize: `bold 40px`,
             color: '#ffffff',
             stroke: '#ff00ff',
             strokeThickness: 4,
-        }).setOrigin(0.5);
-        this.add(clickToPlay);
+        });
+
+        this.add(clickToGameSceneBtn);
+    }
+
+    hide() {
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 0,
+            duration: 500,
+            ease: 'Cubic.Out',
+            onComplete: () => {
+                console.log(' TitleOverlay Faded Out');
+                this.active = false;
+            }
+        });
+    }
+
+    show(callback: Function) {
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 255,
+            duration: 500,
+            ease: 'Cubic.In',
+            onComplete: () => {
+                console.log(' TitleOverlay Faded In');
+                this.active = true;
+                callback && callback();
+            }
+        });
     }
 }

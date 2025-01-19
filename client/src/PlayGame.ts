@@ -36,6 +36,7 @@ export class PlayGame extends Phaser.Scene {
     private creditsLabel: GameObjects.Text;
     private creditsValue: number = 0;
     private coinShower: CoinShower;
+    titleOverlay: TitleOverlay;
 
     constructor() {
         super({
@@ -46,6 +47,7 @@ export class PlayGame extends Phaser.Scene {
     }
 
     async create() {
+        // LOADING GAME DATA FROM FILE
         this.gameData = this.cache.json.get('configuration');
 
         let g_width = Config.gameSize.width;
@@ -56,6 +58,7 @@ export class PlayGame extends Phaser.Scene {
         bgimage.scale = g_width / bgimage.width;
         this.add.existing(bgimage);
 
+        // ADDING SPIN BUTTON
         let buttonSize = { width: 350, height: 80 };
         let button_posi = { x: g_width / 2, y: 1000 };
 
@@ -65,6 +68,7 @@ export class PlayGame extends Phaser.Scene {
         this.add.existing(btn);
 
 
+        // ADDING SPIN WHEEL
         const pointer = new Sprite(this, g_width / 2, 185, 'pointer');
         this.add.existing(pointer);
 
@@ -74,6 +78,7 @@ export class PlayGame extends Phaser.Scene {
         this.wheel.y = g_height / 2;
         this.wheel.setScale(.7);
 
+        // ADDING PRESETS CHEAT
         let dropDown = new Presets(this);
         dropDown.create(this.gameData);
         dropDown.setPosition(Config.gameSize.width - 200, 70);
@@ -84,17 +89,7 @@ export class PlayGame extends Phaser.Scene {
         }).setOrigin(1, 0.5);
         this.add.existing(this.presetLabel);
 
-        // Initialize variables for FPS tracking
-        this.lastUpdateTime = performance.now(); // Time of the last update
-        this.frameCount = 0; // Counts frames within a secon
-
-        let titleOverlay = new TitleOverlay(this);
         this.coinShower = new CoinShower(this);
-
-        this.creditsLabel = new GameObjects.Text(this, 20, 20, 'Credits Balance 0', {
-            fontSize: '40px',
-        }).setOrigin(0, 0);
-        this.add.existing(this.creditsLabel);
 
         this.winningLabel = new GameObjects.Text(this, g_width / 2, 70, ``, {
             fontSize: '70px',
@@ -104,12 +99,23 @@ export class PlayGame extends Phaser.Scene {
         }).setOrigin(0.5, 0);
         this.add.existing(this.winningLabel);
 
+        this.titleOverlay = new TitleOverlay(this);
+
+        // ADDING CREDIT INFO AND WINNING
+        this.creditsLabel = new GameObjects.Text(this, 20, 20, 'Credits Balance 0', {
+            fontSize: '40px',
+        }).setOrigin(0, 0);
+        this.add.existing(this.creditsLabel);
+
+        // FPS TRACKING
         this.fpsLabel = new GameObjects.Text(this, 100, g_height - 50, 'Fps', {
             fontSize: '20px',
             color: '#00ff00'
         }).setOrigin(0.5);
         this.add.existing(this.fpsLabel);
 
+        this.lastUpdateTime = performance.now();
+        this.frameCount = 0;
     }
 
     private applyPreset(preset: number) {
@@ -147,9 +153,12 @@ export class PlayGame extends Phaser.Scene {
 
     async onSpinComplete(value: number) {
         this.winningLabel.setText(`YOU WON ${value} CREDITS!`);
-        this.coinShower.dropCoins();
-        await this.addCredits(value);
-        this.reset();
+        this.addCredits(value);
+        this.coinShower.dropCoins(()=>{
+            this.titleOverlay.show(()=>{
+                this.reset();
+            });
+        });
     }
 
     reset() {
