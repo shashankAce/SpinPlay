@@ -1,7 +1,7 @@
 // CLASS TO PRELOAD ASSETS
 
 import { GameObjects } from "phaser";
-import { GameOptions } from "./GameOptions";
+import { Config } from "./Config";
 
 // PreloadAssets class extends Phaser.Scene class
 export class PreloadAssets extends Phaser.Scene {
@@ -50,7 +50,7 @@ export class PreloadAssets extends Phaser.Scene {
 
         let progressBox = this.add.graphics();
         progressBox.clear();
-        progressBox.fillStyle(GameOptions.progress_bg_color, 1); //ff00d9
+        progressBox.fillStyle(Config.progress_bg_color, 1); //ff00d9
         progressBox.fillRect(width / 2 - progress_w / 2, height * 0.7, progress_w, progress_h);
 
         let progressBar = this.add.graphics();
@@ -84,7 +84,7 @@ export class PreloadAssets extends Phaser.Scene {
                     let p_value = Math.floor(currentProgress.value * 100);
                     percentText.setText(p_value + '%');
                     progressBar.clear();
-                    progressBar.fillStyle(GameOptions.progress_filler_color, 1); // White fill color
+                    progressBar.fillStyle(Config.progress_filler_color, 1); // White fill color
                     progressBar.fillRect(width / 2 - progress_w / 2 + margin / 2, height * 0.7 + margin / 2, progress_w * currentProgress.value - margin, progress_h - margin);
 
                     if (p_value == 100 && !isSceneLoaded) {

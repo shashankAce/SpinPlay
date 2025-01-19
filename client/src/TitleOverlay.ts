@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { GameOptions } from "./GameOptions";
+import { Config } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
 import { GraphicButton } from "./GameObjects/GraphicButton";
 
@@ -13,8 +13,8 @@ export class TitleOverlay extends GameObjects.Container {
 
     private create() {
 
-        let g_width = GameOptions.gameSize.width;
-        let g_height = GameOptions.gameSize.height;
+        let g_width = Config.gameSize.width;
+        let g_height = Config.gameSize.height;
 
         let bgimage = new Sprite(this.scene, g_width / 2, g_height / 2, "background");
         bgimage.setButtonEnabled(true);

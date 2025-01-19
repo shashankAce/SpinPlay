@@ -1,6 +1,6 @@
 import { Animations, GameObjects } from "phaser";
 import { Sprite } from "./GameObjects/Sprite";
-import { GameOptions } from "./GameOptions";
+import { Config } from "./Config";
 
 export class CoinShower extends GameObjects.Group {
 
@@ -52,7 +52,7 @@ export class CoinShower extends GameObjects.Group {
 
         if (coin) {
             coin.setActive(true).setVisible(true);
-            const x = Phaser.Math.Between(50, GameOptions.gameSize.width - 50);
+            const x = Phaser.Math.Between(50, Config.gameSize.width - 50);
             coin.setPosition(x, -200);
             coin.angle = Phaser.Math.Between(-20, 90);
             coin.setScale(0.5);
@@ -62,7 +62,7 @@ export class CoinShower extends GameObjects.Group {
             // Make the coin fall
             this.scene.tweens.add({
                 targets: coin,
-                y: GameOptions.gameSize.height + 200,
+                y: Config.gameSize.height + 200,
                 duration: Phaser.Math.Between(1000, 2000),
                 onComplete: () => {
                     // coin.setActive(false).setVisible(false);

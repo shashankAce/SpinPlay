@@ -1,6 +1,6 @@
 import { GameObjects, Tweens } from "phaser";
 import { TitleOverlay } from "./TitleOverlay";
-import { GameData, GameOptions } from "./GameOptions";
+import { GameData, Config } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
 import { SpinWheel } from "./SpinWheel";
 import { CoinShower } from "./CoinShower";
@@ -13,6 +13,9 @@ export class PlayGame extends Phaser.Scene {
     soundManager: any;
     selectedItem: number = -1;
     wheel_cont: GameObjects.Container;
+    fpsLabel: GameObjects.Text;
+    lastUpdateTime: number;
+    frameCount: number;
 
     constructor() {
         super({
@@ -22,8 +25,8 @@ export class PlayGame extends Phaser.Scene {
 
     async create() {
 
-        let g_width = GameOptions.gameSize.width;
-        let g_height = GameOptions.gameSize.height;
+        let g_width = Config.gameSize.width;
+        let g_height = Config.gameSize.height;
 
         let bgimage = new Sprite(this, g_width / 2, g_height / 2, "background");
         bgimage.setOrigin(0.5);
@@ -41,7 +44,7 @@ export class PlayGame extends Phaser.Scene {
         this.add.existing(btn);
 
 
-        const pointer = new Sprite(this, g_width / 2, 80, 'pointer')
+        const pointer = new Sprite(this, g_width / 2, 80, 'pointer');
         this.add.existing(pointer);
 
         this.wheel = new SpinWheel(this);
@@ -54,18 +57,16 @@ export class PlayGame extends Phaser.Scene {
         let shower = new CoinShower(this);
         shower.launchCoin();
 
-        this.game_update();
-    }
+        this.fpsLabel = new GameObjects.Text(this, 100, 50, 'Fps', {
+            fontSize: '20px',
+            color: '#00ff00'
+        }).setOrigin(0.5);
+        this.add.existing(this.fpsLabel);
 
-    game_update(): void {
-        this.time.addEvent({
-            delay: 1 / 60,
-            callback: () => {
-                this.wheel.onUpdate(.016);
-            },
-            callbackScope: this,
-            loop: true
-        });
+        // Initialize variables for FPS tracking
+        this.lastUpdateTime = performance.now(); // Time of the last update
+        this.frameCount = 0; // Counts frames within a secon
+
     }
 
     onSpinClick() {
@@ -117,5 +118,20 @@ export class PlayGame extends Phaser.Scene {
             random -= weights[i];
         }
         return -1;
+    }
+
+    update(time: number, delta: number): void {
+        this.trackFps();
+    }
+
+    trackFps() {
+        this.frameCount++;
+        const currentTime = performance.now();
+        if (currentTime - this.lastUpdateTime >= 1000) {
+            const fps = this.frameCount;
+            this.fpsLabel.setText(`FPS: ${fps}`);
+            this.frameCount = 0;
+            this.lastUpdateTime = currentTime;
+        }
     }
 }

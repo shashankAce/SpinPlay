@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { GameOptions } from "../GameOptions";
+import { Config } from "../Config";
 
 export class GraphicButton extends GameObjects.Graphics {
 
@@ -9,7 +9,7 @@ export class GraphicButton extends GameObjects.Graphics {
         this._callback = callback;
 
         this.clear();
-        this.fillStyle(GameOptions.buton_color, 1);
+        this.fillStyle(Config.buton_color, 1);
         this.fillRect(x, y, width, height);
 
         this.setInteractive(
