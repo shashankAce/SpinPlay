@@ -47,7 +47,6 @@ export class Sprite extends Phaser.GameObjects.Sprite {
     private onClick() {
         if (this.isButton) {
             console.log('Button clicked:', this.texture.key);
-            this.emit('buttonclick'); // Emit a custom event
         }
     }
 
