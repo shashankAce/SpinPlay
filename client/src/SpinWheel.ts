@@ -1,15 +1,7 @@
 import { GameObjects } from "phaser";
-import { Config, GameData } from "./Config";
+import { Config } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
-import { resolve } from "../../webpack.config";
-
-
-enum WHEEL_STATE {
-    IDLE,
-    ACCLERATE,
-    CONTSTANT,
-    DEACCLERATE
-}
+import { GAME_DATA } from "./PlayGame";
 
 export class SpinWheel extends GameObjects.Container {
     private isSpinPressed: boolean = false;
@@ -17,11 +9,9 @@ export class SpinWheel extends GameObjects.Container {
     constructor(scene: Phaser.Scene) {
         super(scene);
         scene.add.existing(this);
-
-        this.create();
     }
 
-    private create() {
+    create(gameData: GAME_DATA) {
         let g_width = Config.gameSize.width;
         let g_height = Config.gameSize.height;
 
@@ -30,8 +20,8 @@ export class SpinWheel extends GameObjects.Container {
         this.setScale(.7);
 
         let angle = 45;
-        for (let index = 0; index < GameData.credits.length; index++) {
-            const element = GameData.credits[index];
+        for (let index = 0; index < gameData.credits.length; index++) {
+            const element = gameData.credits[index];
 
             const itemContainer = new GameObjects.Container(this.scene);
             const wheel_slice = new Sprite(this.scene, 0, 0, 'wheel_slice');

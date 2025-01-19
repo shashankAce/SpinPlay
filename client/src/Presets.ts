@@ -1,20 +1,18 @@
 import { GameObjects } from "phaser";
-import { GameData } from "./Config";
 import { Button } from "./GameObjects/Button";
 import { clientEvent } from "./EventListener/clientEvent";
 import { EventName } from "./EventListener/EventName";
+import { GAME_DATA } from "./PlayGame";
 
-export class DropDown extends GameObjects.Container {
+export class Presets extends GameObjects.Container {
     presetLabel: GameObjects.Text;
 
     constructor(scene: Phaser.Scene) {
         super(scene);
         scene.add.existing(this);
-
-        this.create();
     }
 
-    create() {
+    create(gameData: GAME_DATA) {
 
         let margin = 10;
         let buttonSize = { width: 350, height: 80 };
@@ -25,8 +23,8 @@ export class DropDown extends GameObjects.Container {
         btn.disableClick(true);
         this.add(btn);
 
-        for (let index = 0; index < GameData.presets.length; index++) {
-            const element = GameData.presets[index];
+        for (let index = 0; index < gameData.presets.length; index++) {
+            const element = gameData.presets[index];
 
             let btn = new Button(this.scene);
             btn.id = element;

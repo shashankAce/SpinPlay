@@ -1,26 +1,31 @@
 import { GameObjects, Tweens } from "phaser";
 import { TitleOverlay } from "./TitleOverlay";
-import { GameData, Config } from "./Config";
+import { Config } from "./Config";
 import { Sprite } from "./GameObjects/Sprite";
 import { SpinWheel } from "./SpinWheel";
 import { CoinShower } from "./CoinShower";
 import { GraphicButton } from "./GameObjects/GraphicButton";
 import { Button } from "./GameObjects/Button";
-import { DropDown } from "./DropDown";
 import { clientEvent } from "./EventListener/clientEvent";
 import { EventName } from "./EventListener/EventName";
+import { Presets } from "./Presets";
+
+export type GAME_DATA = {
+    credits: number[],
+    weight: number[],
+    presets: number[]
+}
 
 export class PlayGame extends Phaser.Scene {
     private wheel: SpinWheel;
-    isSpinPressed: Boolean = false;
-    soundManager: any;
-    selectedItem: number = -1;
-    wheel_cont: GameObjects.Container;
-    fpsLabel: GameObjects.Text;
-    lastUpdateTime: number;
-    frameCount: number;
-    presetLabel: GameObjects.Text;
-    private presetValue: number;
+    private isSpinPressed: Boolean = false;
+    private soundManager: any;
+    private gameData: GAME_DATA;
+    private fpsLabel: GameObjects.Text;
+    private lastUpdateTime: number;
+    private frameCount: number;
+    private presetLabel: GameObjects.Text;
+    private presetValue: number = -1;
 
     constructor() {
         super({
@@ -31,6 +36,7 @@ export class PlayGame extends Phaser.Scene {
     }
 
     async create() {
+        this.gameData = this.cache.json.get('configuration');
 
         let g_width = Config.gameSize.width;
         let g_height = Config.gameSize.height;
@@ -40,14 +46,12 @@ export class PlayGame extends Phaser.Scene {
         bgimage.scale = g_width / bgimage.width;
         this.add.existing(bgimage);
 
-        // this.addSpinWheel();
-
         let buttonSize = { width: 350, height: 80 };
         let button_posi = { x: g_width / 2, y: 870 };
 
         let btn = new Button(this);
         btn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
-        btn.addText('Click To Spin');
+        btn.addText('PRESS TO SPIN');
         this.add.existing(btn);
 
 
@@ -55,17 +59,16 @@ export class PlayGame extends Phaser.Scene {
         this.add.existing(pointer);
 
         this.wheel = new SpinWheel(this);
+        this.wheel.create(this.gameData);
         this.wheel.x = g_width / 2;
         this.wheel.y = g_height / 2 - 100;
         this.wheel.setScale(.7);
 
-        // let titleOverlay = new TitleOverlay(this);
-
         let shower = new CoinShower(this);
         shower.launchCoin();
 
-
-        let dropDown = new DropDown(this);
+        let dropDown = new Presets(this);
+        dropDown.create(this.gameData);
         dropDown.setPosition(Config.gameSize.width - 200, 70);
 
         this.fpsLabel = new GameObjects.Text(this, 100, 50, 'Fps', {
@@ -85,53 +88,49 @@ export class PlayGame extends Phaser.Scene {
         this.lastUpdateTime = performance.now(); // Time of the last update
         this.frameCount = 0; // Counts frames within a secon
 
+        let titleOverlay = new TitleOverlay(this);
+
     }
 
-    applyPreset(preset: number) {
+    private applyPreset(preset: number) {
+        if (this.isSpinPressed)
+            return;
         this.presetValue = preset;
         this.presetLabel.setText(`Preset Applied ${preset}`);
     }
 
     async onSpinClick() {
         if (!this.isSpinPressed) {
-            // this.isSpinPressed = true;
-            // this.soundManager.playSound(1);
-            if (this.selectedItem == -1) {
+            this.isSpinPressed = true;
 
-                let indx = this.getRandWeight(GameData.weight);
-                console.log(GameData.weight[indx], GameData.credits[indx]);
-                
-                // this.spinWheel(indx);
+            // this.soundManager.playSound(1);
+
+            if (this.presetValue == -1) {
+
+                let indx = this.getRandWeight(this.gameData.weight);
+                console.log(this.gameData.weight[indx], this.gameData.credits[indx]);
+
+                this.presetLabel.setText(`Random Credit ${this.gameData.credits[indx]}`);
+
                 await this.wheel.spin(indx);
-                this.presetLabel.setText("");
+                this.reset();
             }
             else {
-                this.spinWheel(this.selectedItem)
+                let index = this.gameData.credits.indexOf(this.presetValue);
+                await this.wheel.spin(index);
+                this.reset();
             }
         }
 
     }
 
-    spinWheel(stopAtIndex: number) {
-        let final = (360 - stopAtIndex * 45) + (360 * 1);
-
-        let cur_angle = this.wheel_cont.angle;
-        let times = Math.floor(cur_angle / 360);
-        cur_angle -= 360 * times;
-        final = final - cur_angle;
-
-        this.tweens.add({
-            targets: this.wheel_cont,
-            angle: cur_angle + final,
-            duration: 2000,
-            ease: 'Cubic.InOut',
-            onComplete: () => {
-                this.isSpinPressed = false;
-            },
-        });
+    reset() {
+        this.presetLabel.setText("");
+        this.presetValue = -1;
+        this.isSpinPressed = false;
     }
 
-    getRandWeight(weights: number[]) {
+    private getRandWeight(weights: number[]) {
         let totalWeight = 0, i, random;
         for (i = 0; i < weights.length; i++) {
             totalWeight += weights[i];
@@ -150,7 +149,7 @@ export class PlayGame extends Phaser.Scene {
         this.trackFps();
     }
 
-    trackFps() {
+    private trackFps() {
         this.frameCount++;
         const currentTime = performance.now();
         if (currentTime - this.lastUpdateTime >= 1000) {
