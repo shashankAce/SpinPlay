@@ -37,6 +37,9 @@ export class PlayGame extends Phaser.Scene {
     private creditsValue: number = 0;
     private coinShower: CoinShower;
     titleOverlay: TitleOverlay;
+    landing_audio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+    spinBtn: Button;
+    presetsContiner: Presets;
 
     constructor() {
         super({
@@ -62,10 +65,10 @@ export class PlayGame extends Phaser.Scene {
         let buttonSize = { width: 350, height: 80 };
         let button_posi = { x: g_width / 2, y: 1000 };
 
-        let btn = new Button(this);
-        btn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
-        btn.addText('PRESS TO SPIN');
-        this.add.existing(btn);
+        this.spinBtn = new Button(this);
+        this.spinBtn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
+        this.spinBtn.addText('PRESS TO SPIN');
+        this.add.existing(this.spinBtn);
 
 
         // ADDING SPIN WHEEL
@@ -79,9 +82,9 @@ export class PlayGame extends Phaser.Scene {
         this.wheel.setScale(.7);
 
         // ADDING PRESETS CHEAT
-        let dropDown = new Presets(this);
-        dropDown.create(this.gameData);
-        dropDown.setPosition(Config.gameSize.width - 200, 70);
+        this.presetsContiner = new Presets(this);
+        this.presetsContiner.create(this.gameData);
+        this.presetsContiner.setPosition(Config.gameSize.width - 200, 70);
 
         this.presetLabel = new GameObjects.Text(this, Config.gameSize.width - 20, Config.gameSize.height - 200, '', {
             fontSize: '50px',
@@ -116,6 +119,8 @@ export class PlayGame extends Phaser.Scene {
 
         this.lastUpdateTime = performance.now();
         this.frameCount = 0;
+
+        this.landing_audio = this.sound.add("wheel-landing");
     }
 
     private applyPreset(preset: number) {
@@ -128,6 +133,9 @@ export class PlayGame extends Phaser.Scene {
     async onSpinClick() {
         if (!this.isSpinPressed) {
             this.isSpinPressed = true;
+
+            this.spinBtn.disableClick(true);
+            this.presetsContiner.disableClick(true);
 
             this.winningLabel.setText("");
             // this.soundManager.playSound(1);
@@ -153,18 +161,23 @@ export class PlayGame extends Phaser.Scene {
 
     async onSpinComplete(value: number) {
         this.winningLabel.setText(`YOU WON ${value} CREDITS!`);
-        this.addCredits(value);
-        this.coinShower.dropCoins(()=>{
-            this.titleOverlay.show(()=>{
-                this.reset();
+        this.landing_audio.once('complete', () => {
+            this.addCredits(value);
+            this.coinShower.dropCoins(() => {
+                this.titleOverlay.show(() => {
+                    this.reset();
+                });
             });
         });
+        this.landing_audio.play();
     }
 
     reset() {
         this.presetLabel.setText("");
         this.presetValue = -1;
         this.isSpinPressed = false;
+        this.spinBtn.disableClick(false);
+        this.presetsContiner.disableClick(false);
     }
 
     private getRandWeight(weights: number[]) {
@@ -199,18 +212,25 @@ export class PlayGame extends Phaser.Scene {
 
     async addCredits(value: number) {
         return new Promise((resolve: Function, reject) => {
+            this.sound.play("credits-rollup", {
+                volume: 1,
+                rate: 1,
+                loop: true,
+                delay: 0
+            });
 
             this.tweens.addCounter({
                 from: this.creditsValue,
                 to: this.creditsValue + value,
                 ease: 'Linear',
-                duration: 1000,
+                duration: 2000,
                 onUpdate: (tween) => {
                     let value = Math.floor(tween.getValue());
                     this.creditsLabel.setText(`Credit Balance ${value}`);
                 },
                 onComplete: () => {
                     this.creditsValue += value;
+                    this.sound.stopByKey("credits-rollup");
                     resolve();
                 }
             });

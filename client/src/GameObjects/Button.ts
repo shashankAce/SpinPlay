@@ -92,7 +92,8 @@ export class Button extends GameObjects.Container {
     }
 
     async onClick() {
-        if(!this.clickEnabled) return;
+        if (!this.clickEnabled) return;
+        this.scene.sound.play("wheel-click");
         await this.scaleEffect();
         this.funcCallback && this.funcCallback(this);
     }

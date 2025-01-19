@@ -9,6 +9,10 @@ export class PreloadAssets extends Phaser.Scene {
 
     create(): void {
 
+        this.load.audio("credits-rollup", "assets/sounds/credits-rollup.wav");
+        this.load.audio("wheel-click", "assets/sounds/wheel-click.wav");
+        this.load.audio("wheel-landing", "assets/sounds/wheel-landing.wav");
+
         this.load.json('configuration', 'assets/config.json');
         this.load.image('pointer', 'assets/images/pointer.png');
         this.load.image('wheel_center', 'assets/images/wheel-center.png');

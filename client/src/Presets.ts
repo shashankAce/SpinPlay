@@ -35,6 +35,12 @@ export class Presets extends GameObjects.Container {
         }
     }
 
+    disableClick(bool) {
+        this.list.forEach((btn, index) => {
+            (btn as Button).disableClick(bool);
+        });
+    }
+
     onOptionPick(button: Button) {
         clientEvent.dispatchEvent(EventName.preset_pick, button.id);
     }
