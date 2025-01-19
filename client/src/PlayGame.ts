@@ -9,6 +9,7 @@ import { Button } from "./GameObjects/Button";
 import { clientEvent } from "./EventListener/clientEvent";
 import { EventName } from "./EventListener/EventName";
 import { Presets } from "./Presets";
+import { resolve } from "../../webpack.config";
 
 export type GAME_DATA = {
     credits: number[],
@@ -18,14 +19,23 @@ export type GAME_DATA = {
 
 export class PlayGame extends Phaser.Scene {
     private wheel: SpinWheel;
-    private isSpinPressed: Boolean = false;
     private soundManager: any;
     private gameData: GAME_DATA;
+
+    private isSpinPressed: Boolean = false;
+
     private fpsLabel: GameObjects.Text;
     private lastUpdateTime: number;
     private frameCount: number;
+
     private presetLabel: GameObjects.Text;
     private presetValue: number = -1;
+
+    private winningLabel: GameObjects.Text;
+
+    private creditsLabel: GameObjects.Text;
+    private creditsValue: number = 0;
+    private coinShower: CoinShower;
 
     constructor() {
         super({
@@ -47,7 +57,7 @@ export class PlayGame extends Phaser.Scene {
         this.add.existing(bgimage);
 
         let buttonSize = { width: 350, height: 80 };
-        let button_posi = { x: g_width / 2, y: 870 };
+        let button_posi = { x: g_width / 2, y: 1000 };
 
         let btn = new Button(this);
         btn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
@@ -55,28 +65,18 @@ export class PlayGame extends Phaser.Scene {
         this.add.existing(btn);
 
 
-        const pointer = new Sprite(this, g_width / 2, 80, 'pointer');
+        const pointer = new Sprite(this, g_width / 2, 185, 'pointer');
         this.add.existing(pointer);
 
         this.wheel = new SpinWheel(this);
         this.wheel.create(this.gameData);
         this.wheel.x = g_width / 2;
-        this.wheel.y = g_height / 2 - 100;
+        this.wheel.y = g_height / 2;
         this.wheel.setScale(.7);
-
-        let shower = new CoinShower(this);
-        shower.launchCoin();
 
         let dropDown = new Presets(this);
         dropDown.create(this.gameData);
         dropDown.setPosition(Config.gameSize.width - 200, 70);
-
-        this.fpsLabel = new GameObjects.Text(this, 100, 50, 'Fps', {
-            fontSize: '20px',
-            color: '#00ff00'
-        }).setOrigin(0.5);
-        this.add.existing(this.fpsLabel);
-
 
         this.presetLabel = new GameObjects.Text(this, Config.gameSize.width - 20, Config.gameSize.height - 200, '', {
             fontSize: '50px',
@@ -89,6 +89,26 @@ export class PlayGame extends Phaser.Scene {
         this.frameCount = 0; // Counts frames within a secon
 
         let titleOverlay = new TitleOverlay(this);
+        this.coinShower = new CoinShower(this);
+
+        this.creditsLabel = new GameObjects.Text(this, 20, 20, 'Credits Balance 0', {
+            fontSize: '40px',
+        }).setOrigin(0, 0);
+        this.add.existing(this.creditsLabel);
+
+        this.winningLabel = new GameObjects.Text(this, g_width / 2, 70, ``, {
+            fontSize: '70px',
+            color: '#ffffff',
+            stroke: '#ff0000',
+            strokeThickness: 4,
+        }).setOrigin(0.5, 0);
+        this.add.existing(this.winningLabel);
+
+        this.fpsLabel = new GameObjects.Text(this, 100, g_height - 50, 'Fps', {
+            fontSize: '20px',
+            color: '#00ff00'
+        }).setOrigin(0.5);
+        this.add.existing(this.fpsLabel);
 
     }
 
@@ -103,25 +123,33 @@ export class PlayGame extends Phaser.Scene {
         if (!this.isSpinPressed) {
             this.isSpinPressed = true;
 
+            this.winningLabel.setText("");
             // this.soundManager.playSound(1);
 
             if (this.presetValue == -1) {
 
                 let indx = this.getRandWeight(this.gameData.weight);
-                console.log(this.gameData.weight[indx], this.gameData.credits[indx]);
-
                 this.presetLabel.setText(`Random Credit ${this.gameData.credits[indx]}`);
 
                 await this.wheel.spin(indx);
-                this.reset();
+                this.onSpinComplete(this.gameData.credits[indx]);
+
             }
             else {
+
                 let index = this.gameData.credits.indexOf(this.presetValue);
                 await this.wheel.spin(index);
-                this.reset();
+                this.onSpinComplete(this.presetValue);
             }
         }
 
+    }
+
+    async onSpinComplete(value: number) {
+        this.winningLabel.setText(`YOU WON ${value} CREDITS!`);
+        this.coinShower.dropCoins();
+        await this.addCredits(value);
+        this.reset();
     }
 
     reset() {
@@ -158,5 +186,26 @@ export class PlayGame extends Phaser.Scene {
             this.frameCount = 0;
             this.lastUpdateTime = currentTime;
         }
+    }
+
+    async addCredits(value: number) {
+        return new Promise((resolve: Function, reject) => {
+
+            this.tweens.addCounter({
+                from: this.creditsValue,
+                to: this.creditsValue + value,
+                ease: 'Linear',
+                duration: 1000,
+                onUpdate: (tween) => {
+                    let value = Math.floor(tween.getValue());
+                    this.creditsLabel.setText(`Credit Balance ${value}`);
+                },
+                onComplete: () => {
+                    this.creditsValue += value;
+                    resolve();
+                }
+            });
+        })
+
     }
 }

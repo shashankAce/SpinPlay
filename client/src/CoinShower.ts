@@ -29,10 +29,11 @@ export class CoinShower extends GameObjects.Group {
         }
     }
 
-    launchCoin() {
+    dropCoins() {
         this.resetCoins();
+        this.scene.time.removeAllEvents();
         this.scene.time.addEvent({
-            delay: 100,
+            delay: 90,
             callback: this.dropCoin,
             callbackScope: this,
             loop: true
