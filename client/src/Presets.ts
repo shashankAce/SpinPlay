@@ -35,7 +35,7 @@ export class Presets extends GameObjects.Container {
         }
     }
 
-    disableClick(bool) {
+    disableClick(bool: boolean) {
         this.list.forEach((btn, index) => {
             (btn as Button).disableClick(bool);
         });

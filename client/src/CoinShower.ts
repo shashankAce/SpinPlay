@@ -73,7 +73,6 @@ export class CoinShower extends GameObjects.Group {
                     this.dropCount += 1;
                     if (this.dropCount == 50) {
                         this.funcCallback();
-                        this.funcCallback = null;
                     }
                 }
             });
