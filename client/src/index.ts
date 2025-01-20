@@ -16,6 +16,10 @@ const configObject: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,                      // game renderer
     backgroundColor: Config.gameBackgroundColor,  // game background color
     scale: scaleObject,
+    fps: {
+        target: 144,
+        forceSetTimeOut: true
+    },
     scene: [                                 // array with game scenes
         PreloadAssets,                                  // PreloadAssets scene
         PlayGame                                        // PlayGame scene

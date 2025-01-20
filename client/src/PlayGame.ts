@@ -119,6 +119,7 @@ export class PlayGame extends Phaser.Scene {
         this.frameCount = 0;
 
         this.landing_audio = this.sound.add("wheel-landing");
+        this.addParticle();
     }
 
     private applyPreset(preset: number) {
@@ -234,5 +235,32 @@ export class PlayGame extends Phaser.Scene {
             });
         })
 
+    }
+
+    private addParticle() {
+
+        let g_width = Config.gameSize.width;
+        let g_height = Config.gameSize.height;
+
+        const particles = this.add.particles(0, 0, 'snow-particle', {
+            x: 0,
+            y: 0,
+            // emitZone
+            emitZone: {
+                source: new Phaser.Geom.Rectangle(-100, -100, g_width + 100, 100),
+                type: 'random',
+                quantity: 70
+            },
+            speedY: { min: 50, max: 70 },
+            speedX: { min: -20, max: 20 },
+            accelerationY: { random: [10, 15] },
+            // lifespan
+            lifespan: { min: 8000, max: 10000 },
+            scale: .1,
+            alpha: { random: [0.1, 0.8] },
+            gravityY: 20,
+            frequency: 100,
+            blendMode: 'SCREEN',
+        });
     }
 }

@@ -15,6 +15,7 @@ export class PreloadAssets extends Phaser.Scene {
 
         this.load.json('configuration', 'assets/config.json');
         this.load.image('pointer', 'assets/images/pointer.png');
+        this.load.image('snow-particle', 'assets/images/sunburst.png');
         this.load.image('wheel_center', 'assets/images/wheel-center.png');
         this.load.image('wheel_slice', 'assets/images/wheel-slice.png');
         this.load.animation('coin-anim', "assets/images/coin-anim.json");
