@@ -34,7 +34,7 @@ export class PlayGame extends Phaser.Scene {
     private creditsLabel: GameObjects.Text;
     private creditsValue: number = 0;
     private coinShower: CoinShower;
-    titleOverlay: TitleOverlay;
+    // titleOverlay: TitleOverlay;
     landing_audio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
     spinBtn: Button;
     presetsContiner: Presets;
@@ -54,72 +54,137 @@ export class PlayGame extends Phaser.Scene {
         let g_width = Config.gameSize.width;
         let g_height = Config.gameSize.height;
 
-        let bgimage = new Sprite(this, g_width / 2, g_height / 2, "background");
+        let bgimage = new Sprite(this, g_width / 2, g_height / 2, "bg_default");
         bgimage.setOrigin(0.5);
-        bgimage.scale = g_width / bgimage.width;
+        // bgimage.scale = g_width / bgimage.width;
         this.add.existing(bgimage);
+
+        let flower_pat = new Sprite(this, g_width / 2, -50, "flower_pat");
+        flower_pat.setOrigin(0.5);
+        this.add.existing(flower_pat);
+
+        let gred_homepage = new Sprite(this, g_width / 2, 0, "gred_homepage");
+        gred_homepage.setOrigin(0.5, 0);
+        this.add.existing(gred_homepage);
+
+        let play_cta_y = g_height / 2 + 100;
+
+        let glare_btn = new Sprite(this, g_width / 2, play_cta_y, "glare_btn");
+        glare_btn.setOrigin(0.5);
+        this.add.existing(glare_btn);
+
+        let deaceleration = this.tweens.add({
+            targets: glare_btn,
+            angle: 180,
+            duration: 3000,
+            ease: 'Cubic.Out',
+            paused: false,
+            onComplete: () => {
+                // this.isSpinPressed = false;
+                // resolve();
+                // glare_btn.active = false;
+                glare_btn.setVisible(false);
+            }
+        });
+        deaceleration.play();
+
+
+        let play_cta = new Sprite(this, g_width / 2, play_cta_y, "play_cta");
+        play_cta.setOrigin(0.5);
+        this.add.existing(play_cta);
+
+        let play_cta2 = new Sprite(this, g_width / 2, play_cta_y + 100, "play_cta");
+        play_cta2.setOrigin(0.5);
+        this.add.existing(play_cta2);
+
+        let play_now_label = new GameObjects.Text(this, g_width / 2, play_cta_y - 20, 'play now', {
+            fontSize: '40px',
+            fontFamily: 'formula_extrabold',
+            color: "#000"
+        })
+        play_now_label.setOrigin(0.5, 0.5);
+        this.add.existing(play_now_label);
+
+
+        let height = g_height - 250;
+
+        let coup_cont = new Sprite(this, g_width / 2 - 250, height, "coup_cont");
+        coup_cont.setOrigin(0.5);
+        this.add.existing(coup_cont);
+
+        let coup_cont1 = new Sprite(this, g_width / 2, height, "coup_cont");
+        coup_cont1.setOrigin(0.5);
+        this.add.existing(coup_cont1);
+
+        let coup_cont2 = new Sprite(this, g_width / 2 + 250, height, "coup_cont");
+        coup_cont2.setOrigin(0.5);
+        this.add.existing(coup_cont2);
+
+        let timer = new Sprite(this, g_width / 2 + 250, 250, "timer");
+        timer.setOrigin(0.5);
+        this.add.existing(timer);
 
         // ADDING SPIN BUTTON
         let buttonSize = { width: 350, height: 80 };
         let button_posi = { x: g_width / 2, y: 1000 };
 
-        this.spinBtn = new Button(this);
-        this.spinBtn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
-        this.spinBtn.addText('PRESS TO SPIN');
-        this.add.existing(this.spinBtn);
+        // this.spinBtn = new Button(this);
+        // this.spinBtn.create(button_posi.x, button_posi.y, buttonSize.width, buttonSize.height, this.onSpinClick.bind(this));
+        // this.spinBtn.addText('PRESS TO SPIN');
+        // this.add.existing(this.spinBtn);
 
 
-        // ADDING SPIN WHEEL
-        const pointer = new Sprite(this, g_width / 2, 185, 'pointer');
-        this.add.existing(pointer);
+        // // ADDING SPIN WHEEL
+        // const pointer = new Sprite(this, g_width / 2, 185, 'pointer');
+        // this.add.existing(pointer);
 
-        this.wheel = new SpinWheel(this);
-        this.wheel.create(this.gameData);
-        this.wheel.x = g_width / 2;
-        this.wheel.y = g_height / 2;
-        this.wheel.setScale(.7);
+        // this.wheel = new SpinWheel(this);
+        // this.wheel.create(this.gameData);
+        // this.wheel.x = g_width / 2;
+        // this.wheel.y = g_height / 2;
+        // this.wheel.setScale(.7);
 
-        // ADDING PRESETS CHEAT
-        this.presetsContiner = new Presets(this);
-        this.presetsContiner.create(this.gameData);
-        this.presetsContiner.setPosition(Config.gameSize.width - 200, 70);
+        // // ADDING PRESETS CHEAT
+        // this.presetsContiner = new Presets(this);
+        // this.presetsContiner.create(this.gameData);
+        // this.presetsContiner.setPosition(Config.gameSize.width - 200, 70);
 
-        this.presetLabel = new GameObjects.Text(this, Config.gameSize.width - 20, Config.gameSize.height - 200, '', {
-            fontSize: '50px',
-            color: '#00ff00'
-        }).setOrigin(1, 0.5);
-        this.add.existing(this.presetLabel);
+        // this.presetLabel = new GameObjects.Text(this, Config.gameSize.width - 20, Config.gameSize.height - 200, '', {
+        //     fontSize: '50px',
+        //     color: '#00ff00'
+        // }).setOrigin(1, 0.5);
+        // this.add.existing(this.presetLabel);
 
-        this.coinShower = new CoinShower(this);
+        // this.coinShower = new CoinShower(this);
 
-        this.winningLabel = new GameObjects.Text(this, g_width / 2, 70, ``, {
-            fontSize: '70px',
-            color: '#ffffff',
-            stroke: '#ff0000',
-            strokeThickness: 4,
-        }).setOrigin(0.5, 0);
-        this.add.existing(this.winningLabel);
+        // this.winningLabel = new GameObjects.Text(this, g_width / 2, 70, ``, {
+        //     fontSize: '70px',
+        //     color: '#ffffff',
+        //     stroke: '#ff0000',
+        //     strokeThickness: 4,
+        // }).setOrigin(0.5, 0);
+        // this.add.existing(this.winningLabel);
 
-        this.titleOverlay = new TitleOverlay(this);
+        // // this.titleOverlay = new TitleOverlay(this);
 
-        // ADDING CREDIT INFO AND WINNING
-        this.creditsLabel = new GameObjects.Text(this, 20, 20, 'Credits Balance 0', {
-            fontSize: '40px',
-        }).setOrigin(0, 0);
-        this.add.existing(this.creditsLabel);
+        // // ADDING CREDIT INFO AND WINNING
+        // this.creditsLabel = new GameObjects.Text(this, 20, 20, 'Credits Balance 0', {
+        //     fontSize: '40px',
+        // }).setOrigin(0, 0);
+        // this.add.existing(this.creditsLabel);
 
-        // FPS TRACKING
-        this.fpsLabel = new GameObjects.Text(this, 100, g_height - 50, 'Fps', {
-            fontSize: '20px',
-            color: '#00ff00'
-        }).setOrigin(0.5);
-        this.add.existing(this.fpsLabel);
+        // // FPS TRACKING
+        // this.fpsLabel = new GameObjects.Text(this, 100, g_height - 50, 'Fps', {
+        //     fontSize: '20px',
+        //     color: '#00ff00'
+        // }).setOrigin(0.5);
+        // this.add.existing(this.fpsLabel);
 
-        this.lastUpdateTime = performance.now();
-        this.frameCount = 0;
+        // this.lastUpdateTime = performance.now();
+        // this.frameCount = 0;
 
-        this.landing_audio = this.sound.add("wheel-landing");
-        this.addParticle();
+        // this.landing_audio = this.sound.add("wheel-landing");
+        // this.addParticle();
     }
 
     private applyPreset(preset: number) {
@@ -163,9 +228,9 @@ export class PlayGame extends Phaser.Scene {
         this.landing_audio.once('complete', () => {
             this.addCredits(value);
             this.coinShower.dropCoins(() => {
-                this.titleOverlay.show(() => {
-                    this.reset();
-                });
+                // this.titleOverlay.show(() => {
+                //     this.reset();
+                // });
             });
         });
         this.landing_audio.play();

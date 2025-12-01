@@ -15,10 +15,14 @@ const scaleObject: Phaser.Types.Core.ScaleConfig = {
 const configObject: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,                      // game renderer
     backgroundColor: Config.gameBackgroundColor,  // game background color
+    // antialias: false,
+    // antialiasGL: false,
+    // pixelArt: true,
+    // roundPixels: true,
     scale: scaleObject,
     fps: {
-        target: 144,
-        forceSetTimeOut: true
+        target: 60,
+        forceSetTimeOut: false
     },
     scene: [                                 // array with game scenes
         PreloadAssets,                                  // PreloadAssets scene

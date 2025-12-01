@@ -13,6 +13,16 @@ export class PreloadAssets extends Phaser.Scene {
         this.load.audio("wheel-click", "assets/sounds/wheel-click.wav");
         this.load.audio("wheel-landing", "assets/sounds/wheel-landing.wav");
 
+        this.load.font("formula_extrabold", "assets/font/PPFormula-Extrabold.ttf");
+        
+        this.load.image('bg_default', 'assets/images/BGColour.png');
+        this.load.image('play_cta', 'assets/images/Play now CTA.png');
+        this.load.image('coup_cont', 'assets/images/inactive.png');
+        this.load.image('flower_pat', 'assets/images/Flower pattern.png');
+        this.load.image('glare_btn', 'assets/images/glare.png');
+        this.load.image('gred_homepage', 'assets/images/darkgredient.png');
+        this.load.image('timer', 'assets/images/Timer lines (2).png');
+
         this.load.json('configuration', 'assets/config.json');
         this.load.image('pointer', 'assets/images/pointer.png');
         this.load.image('snow-particle', 'assets/images/sunburst.png');
@@ -31,7 +41,7 @@ export class PreloadAssets extends Phaser.Scene {
         let progress_h = 20;
         let margin = 8;
 
-        let bgimage = this.add.image(width / 2, height / 2, "background");
+        let bgimage = this.add.image(width / 2, height / 2, "bg_default");
         bgimage.setOrigin(0.5);
         bgimage.scale = width / bgimage.width;
 

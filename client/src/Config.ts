@@ -1,8 +1,8 @@
 
 export const Config = {
     gameSize: {
-        width: 1920,
-        height: 1080
+        width: 781,
+        height: 1688
     },
     gameBackgroundColor: 0x000000,
     progress_bg_color: 0xFF00D9,
