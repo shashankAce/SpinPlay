@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "phaser": "^3.87.0",
+    "phaser": "^3.90.0",
     "typescript": "^5.7.2"
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
     "webpack": "^5.97.1",
+    "webpack-bundle-analyzer": "^5.0.1",
     "webpack-cli": "^5.1.4"
   },
   "author": "shashank",

@@ -4,35 +4,36 @@ import { Config } from "./Config";
 export class PreloadAssets extends Phaser.Scene {
 
     preload(): void {
-        this.load.image('background', 'assets/images/background.png');
+        // this.load.image('background', 'assets/images/background.png');
+        this.load.image('bg_default', 'assets/images/BGColour.png');
     }
 
     create(): void {
 
-        this.load.audio("credits-rollup", "assets/sounds/credits-rollup.wav");
-        this.load.audio("wheel-click", "assets/sounds/wheel-click.wav");
-        this.load.audio("wheel-landing", "assets/sounds/wheel-landing.wav");
+        // this.load.audio("credits-rollup", "assets/sounds/credits-rollup.wav");
+        // this.load.audio("wheel-click", "assets/sounds/wheel-click.wav");
+        // this.load.audio("wheel-landing", "assets/sounds/wheel-landing.wav");
 
-        this.load.font("formula_extrabold", "assets/font/PPFormula-Extrabold.ttf");
-        
-        this.load.image('bg_default', 'assets/images/BGColour.png');
-        this.load.image('play_cta', 'assets/images/Play now CTA.png');
-        this.load.image('coup_cont', 'assets/images/inactive.png');
-        this.load.image('flower_pat', 'assets/images/Flower pattern.png');
-        this.load.image('glare_btn', 'assets/images/glare.png');
-        this.load.image('gred_homepage', 'assets/images/darkgredient.png');
-        this.load.image('timer', 'assets/images/Timer lines (2).png');
+        // this.load.font("formula_extrabold", "assets/font/PPFormula-Extrabold.ttf");
 
-        this.load.json('configuration', 'assets/config.json');
-        this.load.image('pointer', 'assets/images/pointer.png');
-        this.load.image('snow-particle', 'assets/images/sunburst.png');
-        this.load.image('wheel_center', 'assets/images/wheel-center.png');
-        this.load.image('wheel_slice', 'assets/images/wheel-slice.png');
-        this.load.animation('coin-anim', "assets/images/coin-anim.json");
-        this.load.spritesheet('coin', 'assets/images/coin-anim.png', {
-            frameWidth: 200,
-            frameHeight: 200
-        });
+        // this.load.image('bg_default', 'assets/images/BGColour.png');
+        // this.load.image('play_cta', 'assets/images/Play now CTA.png');
+        // this.load.image('coup_cont', 'assets/images/inactive.png');
+        // this.load.image('flower_pat', 'assets/images/Flower pattern.png');
+        // this.load.image('glare_btn', 'assets/images/glare.png');
+        // this.load.image('gred_homepage', 'assets/images/darkgredient.png');
+        // this.load.image('timer', 'assets/images/Timer lines (2).png');
+
+        // this.load.json('configuration', 'assets/config.json');
+        // this.load.image('pointer', 'assets/images/pointer.png');
+        // this.load.image('snow-particle', 'assets/images/sunburst.png');
+        // this.load.image('wheel_center', 'assets/images/wheel-center.png');
+        // this.load.image('wheel_slice', 'assets/images/wheel-slice.png');
+        // this.load.animation('coin-anim', "assets/images/coin-anim.json");
+        // this.load.spritesheet('coin', 'assets/images/coin-anim.png', {
+        //     frameWidth: 200,
+        //     frameHeight: 200
+        // });
 
         let width = this.cameras.main.width;
         let height = this.cameras.main.height;
